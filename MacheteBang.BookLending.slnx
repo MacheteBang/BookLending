@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MacheteBang.BookLending.Api/MacheteBang.BookLending.Api.csproj" />
+  </Folder>
+</Solution>
