@@ -1,4 +1,8 @@
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.ConfigureSerilog();
 
 var services = builder.Services;
 {
@@ -7,6 +11,7 @@ var services = builder.Services;
 
 var app = builder.Build();
 {
+    app.UseSerilogRequestLogging();
     app.UseHttpsRedirection();
     app.MapOpenApi();
 }
