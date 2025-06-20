@@ -18,5 +18,4 @@ var app = builder.Build();
     app.MapOpenApiEndpoints();
 }
 
-
 app.Run();
