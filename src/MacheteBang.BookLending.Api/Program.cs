@@ -10,6 +10,8 @@ var services = builder.Services;
     services.AddOpenApi();
     services.ConfigureHealthChecks();
     services.ConfigureTelemetry(builder.Configuration);
+
+    services.ConfigureBooks();
 }
 
 var app = builder.Build();
@@ -18,6 +20,8 @@ var app = builder.Build();
     app.UseHttpsRedirection();
     app.MapHealthCheckEndpoints();
     app.MapOpenApiEndpoints();
+
+    app.MapBooksEndpoints();
 }
 
 app.Run();

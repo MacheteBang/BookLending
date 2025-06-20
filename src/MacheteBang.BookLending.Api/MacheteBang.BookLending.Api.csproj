@@ -20,4 +20,8 @@
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.6" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
   </ItemGroup>
+  <!-- Other Projects -->
+  <ItemGroup>
+    <ProjectReference Include="..\MacheteBang.BookLending.Books\MacheteBang.BookLending.Books.csproj" />
+  </ItemGroup>
 </Project>
