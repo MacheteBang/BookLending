@@ -4,7 +4,7 @@ namespace MacheteBang.BookLending.Api.Configuration;
 
 internal static class ConfigureOpenApiExtensions
 {
-    internal static WebApplication MapOpenApi(this WebApplication app)
+    internal static WebApplication MapOpenApiEndpoints(this WebApplication app)
     {
         OpenApiEndpointRouteBuilderExtensions.MapOpenApi(app);
         app.MapScalarApiReference(options =>

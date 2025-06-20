@@ -7,13 +7,15 @@ builder.Host.ConfigureSerilog();
 var services = builder.Services;
 {
     services.AddOpenApi();
+    services.ConfigureHealthChecks();
 }
 
 var app = builder.Build();
 {
     app.UseSerilogRequestLogging();
     app.UseHttpsRedirection();
-    app.MapOpenApi();
+    app.MapHealthCheckEndpoints();
+    app.MapOpenApiEndpoints();
 }
 
 
