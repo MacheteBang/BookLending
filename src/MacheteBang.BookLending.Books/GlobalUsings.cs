@@ -3,6 +3,8 @@ global using MacheteBang.BookLending.Books.Models;
 global using MacheteBang.BookLending.Books.Requests;
 global using MacheteBang.BookLending.Books.Responses;
 
+global using ErrorOr;
+
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;

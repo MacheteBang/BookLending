@@ -9,10 +9,8 @@ internal class AddBookEndpoint : IBooksEndpoint
             {
                 Book newBook = await CreateBook(request, booksDb);
 
-                // TODO: Correct this when a GetBook endpoint is implemented
-                // return Results.CreatedAtRoute("GetBook", new { id = newBook.Id }, newBook.ToResponse());
+                return Results.CreatedAtRoute("GetBook", new { id = newBook.Id }, newBook.ToResponse());
 
-                return Results.Created("", newBook.ToResponse());
             })
             .WithDescription("Adds a new book to the library catalog")
             .WithName("AddBook")
