@@ -18,6 +18,8 @@ internal class GetBookEndpoint : IBooksEndpoint
                     });
 
             })
+            .Produces<BookResponse>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Gets a specific book by its ID from the library catalog")
             .WithName("GetBook")
             .WithSummary("Get a Book by ID");

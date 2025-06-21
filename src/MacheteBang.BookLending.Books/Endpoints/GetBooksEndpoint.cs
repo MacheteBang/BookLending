@@ -11,6 +11,7 @@ internal class GetBooksEndpoint : IBooksEndpoint
 
                 return Results.Ok(books.ToResponse());
             })
+            .Produces<BooksResponse>(StatusCodes.Status200OK)
             .WithDescription("Retrieves the complete list of books in the library catalog")
             .WithName("GetBooks")
             .WithSummary("Get All Books");

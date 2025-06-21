@@ -12,6 +12,7 @@ internal class AddBookEndpoint : IBooksEndpoint
                 return Results.CreatedAtRoute("GetBook", new { id = newBook.Id }, newBook.ToResponse());
 
             })
+            .Produces<BookResponse>(StatusCodes.Status201Created)
             .WithDescription("Adds a new book to the library catalog")
             .WithName("AddBook")
             .WithSummary("Add a New Book");
