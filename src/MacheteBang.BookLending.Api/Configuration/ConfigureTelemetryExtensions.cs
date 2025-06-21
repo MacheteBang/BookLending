@@ -1,7 +1,6 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using MacheteBang.BookLending.Api.Telemetry;
 using OpenTelemetry.Trace;
-using System.Diagnostics;
 
 namespace MacheteBang.BookLending.Api.Configuration;
 
@@ -17,6 +16,7 @@ public static class ConfigureTelemetryExtensions
                 .WithTracing(builder =>
                 {
                     builder.AddAspNetCoreInstrumentation();
+                    builder.AddEntityFrameworkCoreInstrumentation();
                     builder.AddProcessor(sp =>
                         new HealthCheckTelemetryProcessor(sp.GetRequiredService<ILogger<HealthCheckTelemetryProcessor>>()));
                 })

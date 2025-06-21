@@ -1,5 +1,3 @@
-using MacheteBang.BookLending.Books.Models;
-
 namespace MacheteBang.BookLending.Books.Endpoints;
 
 internal class GetBooksEndpoint : IBooksEndpoint
@@ -7,19 +5,19 @@ internal class GetBooksEndpoint : IBooksEndpoint
     public void MapBooksEndpoint(IEndpointRouteBuilder app)
     {
         app.MapBooksGroup()
-            .MapGet(string.Empty, () =>
+            .MapGet(string.Empty, async ([FromServices] BooksDbContext booksDb) =>
             {
-                Book[] books =
-                [
-                    new Book(Guid.CreateVersion7(), "The Hitchhiker's Guide to the Galaxy", "Douglas Adams"),
-                    new Book(Guid.CreateVersion7(), "1984", "George Orwell"),
-                    new Book(Guid.CreateVersion7(), "To Kill a Mockingbird", "Harper Lee")
-                ];
+                List<Book> books = await GetAllBooksAsync(booksDb);
 
-                return Results.Ok(books.Select(book => book.ToResponse()).ToList());
+                return Results.Ok(books.ToResponse());
             })
             .WithDescription("Retrieves the complete list of books in the library catalog")
             .WithName("GetBooks")
             .WithSummary("Get All Books");
+    }
+
+    private static async Task<List<Book>> GetAllBooksAsync(BooksDbContext booksDb)
+    {
+        return await booksDb.Books.ToListAsync();
     }
 }

@@ -1,7 +1,7 @@
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
 builder.Host.ConfigureSerilog();
 
@@ -11,7 +11,7 @@ var services = builder.Services;
     services.ConfigureHealthChecks();
     services.ConfigureTelemetry(builder.Configuration);
 
-    services.ConfigureBooks();
+    services.ConfigureBooks(builder.Configuration);
 }
 
 var app = builder.Build();
@@ -21,7 +21,7 @@ var app = builder.Build();
     app.MapHealthCheckEndpoints();
     app.MapOpenApiEndpoints();
 
-    app.MapBooksEndpoints();
+    app.UseBooks();
 }
 
 app.Run();
