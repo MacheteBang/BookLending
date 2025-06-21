@@ -1,0 +1,18 @@
+meta {
+  name: Add a Book
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/books
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "1984",
+    "author": "George Orwell"
+  }
+}
