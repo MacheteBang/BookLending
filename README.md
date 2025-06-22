@@ -12,12 +12,6 @@ A modern, clean, and extensible Book Lending API built with .NET 9, minimal APIs
 
 MacheteBang.BookLending is a RESTful API that helps libraries manage their book inventory and lending processes. It offers a streamlined way to catalog books, track their availability, and manage the borrowing process.
 
-```
-📝 POST /books      ➡️ Add a new book to the library
-📚 GET /books       ➡️ Browse all books in the catalog
-📖 GET /books/{id}  ➡️ Find a specific book by ID
-```
-
 ## ✨ Features
 
 - **📚 Book Management** - Add, retrieve, and search for books in the library catalog
@@ -58,9 +52,9 @@ MacheteBang.BookLending is a RESTful API that helps libraries manage their book 
 
    - Create or modify `src/MacheteBang.BookLending.Api/appsettings.Local.json` with: ```json
      {
-        "ConnectionStrings": {
-            "BooksDb": "Server=localhost;Database=BookLending;Trusted_Connection=True;TrustServerCertificate=True;"
-            }
+     "ConnectionStrings": {
+     "BooksDb": "Server=localhost;Database=BookLending;Trusted_Connection=True;TrustServerCertificate=True;"
+     }
      }
 
    ```
@@ -97,29 +91,7 @@ The project includes Bruno API collections for testing:
 
 ## 📖 API Usage Examples
 
-### Adding a Book
-
-```http
-POST /books
-Content-Type: application/json
-
-{
-  "title": "1984",
-  "author": "George Orwell"
-}
-```
-
-### Retrieving All Books
-
-```http
-GET /books
-```
-
-### Getting a Specific Book
-
-```http
-GET /books/{id}
-```
+See the [API Usage Documentation](docs/API-Usage.md) for detailed examples of how to use each endpoint.
 
 ## 🔮 Roadmap
 

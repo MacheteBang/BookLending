@@ -1,6 +1,6 @@
 namespace MacheteBang.BookLending.Books.Endpoints;
 
-internal class GetBookEndpoint : IBooksEndpoint
+internal sealed class GetBookEndpoint : IBooksEndpoint
 {
     public void MapBooksEndpoint(IEndpointRouteBuilder app)
     {
