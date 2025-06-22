@@ -32,7 +32,7 @@ MacheteBang.BookLending is a RESTful API that helps libraries manage their book 
 
 - **Framework**: .NET 9
 - **API Style**: ASP.NET Core Minimal APIs
-- **Database**: SQLite with Entity Framework Core
+- **Database**: SQL Server with Entity Framework Core
 - **Documentation**: OpenAPI with Scalar UI
 - **Testing**: Bruno API Client
 - **Logging**: Serilog
@@ -56,17 +56,18 @@ MacheteBang.BookLending is a RESTful API that helps libraries manage their book 
 
 2. Configure your database connection string
 
-   - Create or modify `src/MacheteBang.BookLending.Api/appsettings.Local.json` with:
-
-   ```json
-   {
-     "ConnectionStrings": {
-       "BooksDb": "Data Source=books.db"
+   - Create or modify `src/MacheteBang.BookLending.Api/appsettings.Local.json` with: ```json
+     {
+        "ConnectionStrings": {
+            "BooksDb": "Server=localhost;Database=BookLending;Trusted_Connection=True;TrustServerCertificate=True;"
+            }
      }
-   }
+
    ```
 
    - Or add the connection string to another appropriate `appsettings.*.json` file
+
+   ```
 
 3. Build the solution
 

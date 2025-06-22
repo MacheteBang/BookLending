@@ -12,7 +12,7 @@ public static class ConfigureBooksExtensions
         {
             services.AddDbContext<BooksDbContext>(options =>
             {
-                options.UseSqlite(dbConnectionString);
+                options.UseSqlServer(dbConnectionString);
             });
         }
 
@@ -20,24 +20,6 @@ public static class ConfigureBooksExtensions
     }
 
     public static WebApplication UseBooks(this WebApplication app)
-    {
-        // Ensure the database and tables are created
-        CreateDatabase(app);
-
-        // Map the books endpoints
-        MapBooksEndpoint(app);
-
-        return app;
-    }
-
-    private static void CreateDatabase(WebApplication app)
-    {
-        using var scope = app.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<BooksDbContext>();
-        db.Database.Migrate();
-    }
-
-    private static void MapBooksEndpoint(WebApplication app)
     {
         Assembly thisAssembly = Assembly.GetExecutingAssembly();
         var endpoints = thisAssembly.GetTypes()
@@ -48,5 +30,7 @@ public static class ConfigureBooksExtensions
             var instance = Activator.CreateInstance(endpoint) as IBooksEndpoint;
             instance?.MapBooksEndpoint(app);
         }
+
+        return app;
     }
 }

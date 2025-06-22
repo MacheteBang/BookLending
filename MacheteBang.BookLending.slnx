@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/MacheteBang.BookLending.Api/MacheteBang.BookLending.Api.csproj" />
+    <Project Path="src/MacheteBang.BookLending.Books.Mssql/MacheteBang.BookLending.Books.Mssql.sqlproj" />
     <Project Path="src/MacheteBang.BookLending.Books/MacheteBang.BookLending.Books.csproj" />
   </Folder>
 </Solution>
