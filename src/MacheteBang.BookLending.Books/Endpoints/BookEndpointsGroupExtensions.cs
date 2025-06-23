@@ -7,4 +7,12 @@ internal static class BookEndpointsGroupExtensions
         return app.MapGroup("/books")
             .WithTags("Books");
     }
+
+    internal static IEndpointRouteBuilder MapBookCopiesGroup(this IEndpointRouteBuilder booksGroup)
+    {
+        return booksGroup
+            .MapBooksGroup()
+            .MapGroup("/{id}/copies")
+            .WithTags("BookCopies");
+    }
 }

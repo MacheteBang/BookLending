@@ -1,0 +1,15 @@
+meta {
+  name: Get All Book Copies
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/books/:id/copies
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 01979e70-61c6-78a3-9c0f-bac88947cf60
+}

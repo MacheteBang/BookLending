@@ -19,6 +19,8 @@ public static class BookResponseExtensions
     {
         return new BooksResponse(
             books.Count,
-            books.Select(b => b.ToResponse()).ToList());
+            books
+                .Select(b => b.ToResponse())
+                .ToList());
     }
 }
