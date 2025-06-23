@@ -2,17 +2,19 @@ namespace MacheteBang.BookLending.Books.Models;
 
 public class Book
 {
-    public Guid Id { get; private set; }
+    public Guid BookId { get; private set; }
+    public required Isbn Isbn { get; set; }
     public required string Title { get; set; }
     public required string Author { get; set; }
 
     private Book() { }
 
-    public static Book Create(string title, string author)
+    public static Book Create(Isbn Isbn, string title, string author)
     {
         return new Book
         {
-            Id = Guid.CreateVersion7(),
+            BookId = Guid.CreateVersion7(),
+            Isbn = Isbn,
             Title = title,
             Author = author
         };

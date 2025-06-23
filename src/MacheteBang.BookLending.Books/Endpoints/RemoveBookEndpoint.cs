@@ -19,7 +19,7 @@ internal sealed class RemoveBookEndpoint : IBooksEndpoint
     private static async Task RemoveBookAsync(Guid id, BooksDbContext booksDb)
     {
         await booksDb.Books
-            .Where(b => b.Id == id)
+            .Where(b => b.BookId == id)
             .ExecuteDeleteAsync();
     }
 }
