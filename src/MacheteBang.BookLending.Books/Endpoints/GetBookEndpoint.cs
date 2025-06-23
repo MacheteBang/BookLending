@@ -27,7 +27,10 @@ internal sealed class GetBookEndpoint : IBooksEndpoint
 
     private static async Task<ErrorOr<Book>> GetBookAsync(Guid id, BooksDbContext booksDb)
     {
-        Book? book = await booksDb.Books.FindAsync(id);
+        Book? book = await booksDb.Books
+            .Include(b => b.Copies)
+            .FirstOrDefaultAsync(b => b.BookId == id);
+
         if (book is null)
         {
             return Error.NotFound();

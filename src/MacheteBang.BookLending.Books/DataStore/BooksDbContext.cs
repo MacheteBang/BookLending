@@ -3,6 +3,7 @@ namespace MacheteBang.BookLending.Books.DataStore;
 internal sealed class BooksDbContext(DbContextOptions<BooksDbContext> options) : DbContext(options)
 {
     public DbSet<Book> Books { get; set; }
+    public DbSet<BookCopy> BookCopies { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,5 +16,16 @@ internal sealed class BooksDbContext(DbContextOptions<BooksDbContext> options) :
                 isbn => isbn.Value,
                 value => Isbn.Create(value)
             );
+
+        // Configure Book and BookCopy relationship
+        modelBuilder.Entity<Book>()
+            .HasMany(b => b.Copies)
+            .WithOne(bc => bc.Book)
+            .HasForeignKey(bc => bc.BookId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure BookCopy entity
+        modelBuilder.Entity<BookCopy>()
+            .HasKey(bc => bc.BookCopyId);
     }
 }

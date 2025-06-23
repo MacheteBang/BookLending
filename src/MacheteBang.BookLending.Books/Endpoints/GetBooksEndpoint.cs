@@ -19,6 +19,8 @@ internal sealed class GetBooksEndpoint : IBooksEndpoint
 
     private static async Task<List<Book>> GetAllBooksAsync(BooksDbContext booksDb)
     {
-        return await booksDb.Books.ToListAsync();
+        return await booksDb.Books
+            .Include(b => b.Copies)
+            .ToListAsync();
     }
 }
