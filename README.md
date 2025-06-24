@@ -15,6 +15,7 @@ MacheteBang.BookLending is a RESTful API that helps libraries manage their book 
 ## ✨ Features
 
 - **📚 Book Management** - Add, retrieve, and search for books in the library catalog
+- **📖 Book Copy Management** - Track individual copies of books with different conditions
 - **🔄 Vertical Slice Architecture** - Feature-focused organization for simpler maintenance and better isolation
 - **📝 OpenAPI Documentation** - Interactive API documentation with Scalar
 - **🧪 API Testing** - Bruno collections for easy API testing
