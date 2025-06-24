@@ -7,9 +7,12 @@ internal sealed class GetBookCopiesEndpoint : IBooksEndpoint
         app.MapBookCopiesGroup()
             .MapGet(string.Empty, async ([FromServices] BooksDbContext booksDb, [FromRoute] Guid id) =>
             {
-                List<BookCopy> copies = await GetAllBookCopiesAsync(booksDb, id);
+                ErrorOr<ICollection<BookCopy>> copies = await GetAllBookCopiesAsync(booksDb, id);
 
-                return Results.Ok(copies.ToResponse());
+                return copies.Match(
+                    copies => Results.Ok(copies.ToResponse()),
+                    errors => errors.ToProblemResult()
+                );
             })
             .Produces<BookCopiesResponse>(StatusCodes.Status200OK)
             .WithDescription("Retrieves all copies of a specific book by its ID")
@@ -17,11 +20,15 @@ internal sealed class GetBookCopiesEndpoint : IBooksEndpoint
             .WithSummary("Get All Copies of a Book");
     }
 
-    private static async Task<List<BookCopy>> GetAllBookCopiesAsync(BooksDbContext booksDb, Guid bookId)
+    private static async Task<ErrorOr<ICollection<BookCopy>>> GetAllBookCopiesAsync(BooksDbContext booksDb, Guid bookId)
     {
-        // TODO: Check if the book exists, return 404 if not found
-        return await booksDb.BookCopies
-            .Where(bc => bc.BookId == bookId)
-            .ToListAsync();
+        Book? book = await booksDb.Books
+            .Where(b => b.BookId == bookId)
+            .Include(b => b.Copies)
+            .FirstOrDefaultAsync();
+
+        if (book is null) return BookErrors.BookNotFound(bookId);
+
+        return book.Copies.ToErrorOr();
     }
 }

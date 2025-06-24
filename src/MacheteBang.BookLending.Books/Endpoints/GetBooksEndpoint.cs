@@ -7,7 +7,7 @@ internal sealed class GetBooksEndpoint : IBooksEndpoint
         app.MapBooksGroup()
             .MapGet(string.Empty, async ([FromServices] BooksDbContext booksDb) =>
             {
-                List<Book> books = await GetAllBooksAsync(booksDb);
+                ICollection<Book> books = await GetAllBooksAsync(booksDb);
 
                 return Results.Ok(books.ToResponse());
             })
@@ -17,10 +17,11 @@ internal sealed class GetBooksEndpoint : IBooksEndpoint
             .WithSummary("Get All Books");
     }
 
-    private static async Task<List<Book>> GetAllBooksAsync(BooksDbContext booksDb)
+    private static async Task<ICollection<Book>> GetAllBooksAsync(BooksDbContext booksDb)
     {
+        // TODO: Should this be a better return type?
         return await booksDb.Books
             .Include(b => b.Copies)
-            .ToListAsync();
+            .ToArrayAsync();
     }
 }

@@ -8,6 +8,7 @@ internal sealed class RemoveBookEndpoint : IBooksEndpoint
             .MapDelete("{id}", async ([FromRoute] Guid id, [FromServices] BooksDbContext booksDb) =>
             {
                 await RemoveBookAsync(id, booksDb);
+
                 return Results.Accepted();
             })
             .Produces(StatusCodes.Status202Accepted)

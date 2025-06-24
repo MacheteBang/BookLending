@@ -7,24 +7,12 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
         app.MapBooksGroup()
             .MapPost(string.Empty, async ([FromBody] AddBookRequest request, [FromServices] BooksDbContext booksDb) =>
             {
-                var newBookResult = await AddBookAsync(request, booksDb);
-                if (newBookResult.IsError && newBookResult.Errors.First().Type == ErrorType.Validation)
-                {
-                    // TODO: Add this to global exception handling
-                    var errorDictionary = newBookResult.Errors
-                        .GroupBy(e => e.Code ?? "General")
-                        .ToDictionary(
-                            g => g.Key,
-                            g => g.Select(e => e.Description).ToArray()
-                        );
-                    return Results.ValidationProblem(errorDictionary);
-                }
-                if (newBookResult.IsError) return Results.Problem("An unexpected error occurred.");
+                ErrorOr<Book> newBookResult = await AddBookAsync(request, booksDb);
 
-                Book newBook = newBookResult.Value;
-
-                return Results.CreatedAtRoute("GetBook", new { id = newBook.BookId }, newBook.ToResponse());
-
+                return newBookResult.Match(
+                    book => Results.CreatedAtRoute("GetBook", new { id = book.BookId }, book.ToResponse()),
+                    errors => errors.ToProblemResult()
+                );
             })
             .Produces<BookResponse>(StatusCodes.Status201Created)
             .WithDescription("Adds a new book to the library catalog")
