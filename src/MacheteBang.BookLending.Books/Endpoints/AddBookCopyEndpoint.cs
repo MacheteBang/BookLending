@@ -4,10 +4,9 @@ internal sealed class AddBookCopyEndpoint : IBooksEndpoint
 {
     public void MapBooksEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapBookCopiesGroup()
-            .MapPost(string.Empty, async ([FromRoute] Guid id, [FromBody] AddBookCopyRequest request, [FromServices] BooksDbContext booksDb) =>
+        app.MapBookCopiesGroup().MapPost(string.Empty, async ([FromRoute] Guid id, [FromBody] AddBookCopyRequest request, [FromServices] BooksDbContext booksDb) =>
             {
-                ErrorOr<BookCopy> result = await CreateBookCopyAsync(id, request, booksDb);
+                ErrorOr<BookCopy> result = await AddBookCopyAsync(id, request, booksDb);
 
                 return result.Match(
                     bookCopy => Results.CreatedAtRoute("GetBookCopy", new { id = bookCopy.BookId, copyId = bookCopy.BookCopyId }, bookCopy.ToResponse()),
@@ -23,8 +22,7 @@ internal sealed class AddBookCopyEndpoint : IBooksEndpoint
             .WithName("AddBookCopy")
             .WithSummary("Add a New Book Copy");
     }
-
-    private static async Task<ErrorOr<BookCopy>> CreateBookCopyAsync(Guid bookId, AddBookCopyRequest request, BooksDbContext booksDb)
+    private static async Task<ErrorOr<BookCopy>> AddBookCopyAsync(Guid bookId, AddBookCopyRequest request, BooksDbContext booksDb)
     {
         Book? book = await booksDb.Books
             .FirstOrDefaultAsync(b => b.BookId == bookId);

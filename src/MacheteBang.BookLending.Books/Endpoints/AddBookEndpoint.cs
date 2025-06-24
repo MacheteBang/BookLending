@@ -7,7 +7,7 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
         app.MapBooksGroup()
             .MapPost(string.Empty, async ([FromBody] AddBookRequest request, [FromServices] BooksDbContext booksDb) =>
             {
-                var newBookResult = await CreateBook(request, booksDb);
+                var newBookResult = await AddBookAsync(request, booksDb);
                 if (newBookResult.IsError && newBookResult.Errors.First().Type == ErrorType.Validation)
                 {
                     // TODO: Add this to global exception handling
@@ -32,7 +32,7 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
             .WithSummary("Add a New Book");
     }
 
-    private static async Task<ErrorOr<Book>> CreateBook(AddBookRequest request, BooksDbContext booksDb)
+    private static async Task<ErrorOr<Book>> AddBookAsync(AddBookRequest request, BooksDbContext booksDb)
     {
         Isbn isbn;
         try
