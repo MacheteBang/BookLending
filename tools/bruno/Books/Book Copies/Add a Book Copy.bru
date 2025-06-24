@@ -1,0 +1,21 @@
+meta {
+  name: Add a Book Copy
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/books/:bookId/copies
+  body: json
+  auth: none
+}
+
+params:path {
+  bookId:
+}
+
+body:json {
+  {
+    "condition": "Good"
+  }
+}

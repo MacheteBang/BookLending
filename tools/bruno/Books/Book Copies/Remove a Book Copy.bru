@@ -1,0 +1,16 @@
+meta {
+  name: Remove a Book Copy
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/books/:bookId/copies/:copyId
+  body: none
+  auth: none
+}
+
+params:path {
+  bookId:
+  copyId: 02979234-f192-7709-a295-0c762bdf7ce6
+}
