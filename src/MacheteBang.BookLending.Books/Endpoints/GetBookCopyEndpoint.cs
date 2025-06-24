@@ -11,11 +11,7 @@ internal sealed class GetBookCopyEndpoint : IBooksEndpoint
 
                 return bookCopy.Match(
                     bookCopy => Results.Ok(bookCopy.ToResponse()),
-                    errors => errors.First().Type switch
-                    {
-                        ErrorType.NotFound => Results.NotFound($"Book copy with ID {copyId} not found."),
-                        _ => Results.Problem(errors.First().Description)
-                    });
+                    errors => errors.ToProblemResult());
             })
             .Produces<BookCopyResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
@@ -29,10 +25,7 @@ internal sealed class GetBookCopyEndpoint : IBooksEndpoint
         BookCopy? bookCopy = await booksDb.BookCopies
             .FirstOrDefaultAsync(bc => bc.BookId == bookId && bc.BookCopyId == copyId);
 
-        if (bookCopy is null)
-        {
-            return Error.NotFound();
-        }
+        if (bookCopy is null) return BookErrors.CopyNotFound(copyId);
 
         return bookCopy;
     }

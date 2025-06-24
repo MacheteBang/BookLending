@@ -10,11 +10,7 @@ internal sealed class AddBookCopyEndpoint : IBooksEndpoint
 
                 return result.Match(
                     bookCopy => Results.CreatedAtRoute("GetBookCopy", new { id = bookCopy.BookId, copyId = bookCopy.BookCopyId }, bookCopy.ToResponse()),
-                    errors => errors.First().Type switch
-                    {
-                        ErrorType.NotFound => Results.NotFound($"Book with ID {id} not found."),
-                        _ => Results.Problem(errors.First().Description)
-                    });
+                    errors => errors.ToProblemResult());
             })
             .Produces<BookCopyResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status404NotFound)
@@ -27,10 +23,7 @@ internal sealed class AddBookCopyEndpoint : IBooksEndpoint
         Book? book = await booksDb.Books
             .FirstOrDefaultAsync(b => b.BookId == bookId);
 
-        if (book is null)
-        {
-            return Error.NotFound();
-        }
+        if (book is null) return BookErrors.BookNotFound(bookId);
 
         BookCopy newCopy = BookCopy.Create(book, request.Condition);
         await booksDb.BookCopies.AddAsync(newCopy);

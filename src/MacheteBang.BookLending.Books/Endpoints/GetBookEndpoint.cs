@@ -11,11 +11,8 @@ internal sealed class GetBookEndpoint : IBooksEndpoint
 
                 return book.Match(
                     book => Results.Ok(book.ToResponse()),
-                    errors => errors.First().Type switch
-                    {
-                        ErrorType.NotFound => Results.NotFound($"Book with ID {id} not found."),
-                        _ => Results.Problem(errors.First().Description)
-                    });
+                    errors => errors.ToProblemResult()
+                );
 
             })
             .Produces<BookResponse>(StatusCodes.Status200OK)
@@ -31,10 +28,7 @@ internal sealed class GetBookEndpoint : IBooksEndpoint
             .Include(b => b.Copies)
             .FirstOrDefaultAsync(b => b.BookId == id);
 
-        if (book is null)
-        {
-            return Error.NotFound();
-        }
+        if (book is null) return BookErrors.BookNotFound(id);
 
         return book;
     }

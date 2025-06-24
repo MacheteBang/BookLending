@@ -14,12 +14,12 @@ public sealed record Isbn
 
         if (string.IsNullOrWhiteSpace(trimmedValue))
         {
-            throw new ArgumentException("ISBN cannot be null or empty.", nameof(value));
+            throw new FormatException("ISBN cannot be null or empty.");
         }
 
         if (!IsValidISBN(trimmedValue))
         {
-            throw new ArgumentException("Invalid ISBN format or checksum.", nameof(value));
+            throw new FormatException("Invalid ISBN format or checksum.");
         }
         return new Isbn(trimmedValue);
     }

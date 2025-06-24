@@ -3,6 +3,7 @@
     <Project Path="src/MacheteBang.BookLending.Api/MacheteBang.BookLending.Api.csproj" />
     <Project Path="src/MacheteBang.BookLending.Books.Mssql/MacheteBang.BookLending.Books.Mssql.sqlproj" />
     <Project Path="src/MacheteBang.BookLending.Books/MacheteBang.BookLending.Books.csproj" />
+    <Project Path="src/MacheteBang.BookLending.Kernel/MacheteBang.BookLending.Kernel.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MacheteBang.BookLending.Books.Tests.Unit/MacheteBang.BookLending.Books.Tests.Unit.csproj" />

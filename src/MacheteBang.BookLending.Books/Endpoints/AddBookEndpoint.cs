@@ -39,9 +39,9 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
         {
             isbn = Isbn.Create(request.Isbn);
         }
-        catch
+        catch (FormatException)
         {
-            return Error.Validation("Invalid ISBN format.");
+            return BookErrors.InvalidIsbn();
         }
 
         Book newBook = Book.Create(isbn, request.Title, request.Author);

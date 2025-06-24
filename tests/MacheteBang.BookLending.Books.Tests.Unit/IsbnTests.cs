@@ -28,9 +28,8 @@ public class IsbnTests
     public void Create_ShouldThrowArgumentException_WhenValueIsNullOrEmpty(string? invalidValue)
     {
         // Act & Assert
-        var exception = Should.Throw<ArgumentException>(() => Isbn.Create(invalidValue));
+        var exception = Should.Throw<FormatException>(() => Isbn.Create(invalidValue));
         exception.Message.ShouldContain("ISBN cannot be null or empty.");
-        exception.ParamName.ShouldBe("value");
     }
     [Theory]
     [InlineData("12345")]
@@ -39,9 +38,8 @@ public class IsbnTests
     public void Create_ShouldThrowArgumentException_WhenFormatIsInvalid(string invalidValue)
     {
         // Act & Assert
-        var exception = Should.Throw<ArgumentException>(() => Isbn.Create(invalidValue));
+        var exception = Should.Throw<FormatException>(() => Isbn.Create(invalidValue));
         exception.Message.ShouldContain("Invalid ISBN format or checksum.");
-        exception.ParamName.ShouldBe("value");
     }
 
     [Theory]
@@ -105,9 +103,8 @@ public class IsbnTests
     public void Create_ShouldThrowArgumentException_WhenChecksumIsInvalid(string invalidValue)
     {
         // Act & Assert
-        var exception = Should.Throw<ArgumentException>(() => Isbn.Create(invalidValue));
+        var exception = Should.Throw<FormatException>(() => Isbn.Create(invalidValue));
         exception.Message.ShouldContain("Invalid ISBN format or checksum.");
-        exception.ParamName.ShouldBe("value");
     }
 
     [Fact]

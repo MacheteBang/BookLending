@@ -121,3 +121,28 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Built with ❤️ using .NET 9
 - Inspired by vertical slice architecture
 - Made with lots of ☕ and 🎵
+
+## ⚠️ Error Handling
+
+This project uses the [ErrorOr](https://github.com/amantinband/error-or) pattern for robust and expressive error handling throughout the API. Instead of throwing exceptions or returning null, endpoints return `ErrorOr<T>` results, which encapsulate either a successful value or a set of errors.
+
+- **Consistent API Responses:** Errors are automatically mapped to appropriate HTTP responses (e.g., 400 for validation errors, 404 for not found, 500 for unexpected errors) using custom extension methods.
+- **Validation & Problem Details:** Validation errors are grouped and returned as detailed problem responses, making it easy for clients to understand what went wrong.
+- **Developer Friendly:** This approach ensures that all error cases are handled explicitly, improving code quality and maintainability.
+
+Example error response for a validation error:
+
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+  "title": "Validation Failed",
+  "status": 400,
+  "errors": {
+    "Books.InvalidIsbn": [
+      "The ISBN provided does not conform to ISBN-10 or ISBN-13 standards."
+    ]
+  }
+}
+```
+
+For more details, see the implementation in `src/MacheteBang.BookLending.Kernel/Errors/ErrorOrExtensions.cs` and endpoint usage in the `Endpoints/` folder.
