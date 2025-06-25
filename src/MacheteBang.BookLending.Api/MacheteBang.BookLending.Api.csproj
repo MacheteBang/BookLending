@@ -23,6 +23,7 @@
   </ItemGroup>
   <!-- Other Projects -->
   <ItemGroup>
+    <ProjectReference Include="..\MacheteBang.BookLending.Users\MacheteBang.BookLending.Users.csproj" />
     <ProjectReference Include="..\MacheteBang.BookLending.Books\MacheteBang.BookLending.Books.csproj" />
   </ItemGroup>
 </Project>

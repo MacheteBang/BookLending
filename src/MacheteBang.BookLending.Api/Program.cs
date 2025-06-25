@@ -1,3 +1,4 @@
+using MacheteBang.BookLending.Users.Configuration;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ var app = builder.Build();
     app.MapHealthCheckEndpoints();
     app.MapOpenApiEndpoints();
 
+    app.UseUsers();
     app.UseBooks();
 }
 
