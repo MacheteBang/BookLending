@@ -12,6 +12,7 @@ var services = builder.Services;
     services.ConfigureHealthChecks();
     services.ConfigureTelemetry(builder.Configuration);
 
+    services.ConfigureUsers(builder.Configuration);
     services.ConfigureBooks(builder.Configuration);
 }
 

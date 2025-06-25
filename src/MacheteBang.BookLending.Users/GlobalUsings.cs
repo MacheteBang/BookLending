@@ -3,3 +3,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.AspNetCore.Routing;
+global using MacheteBang.BookLending.Users.Models;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
