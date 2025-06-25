@@ -16,6 +16,7 @@ var services = builder.Services;
 
 var app = builder.Build();
 {
+    app.UseGlobalExceptionHandling();
     app.UseSerilogRequestLogging();
     app.UseHttpsRedirection();
     app.MapHealthCheckEndpoints();
