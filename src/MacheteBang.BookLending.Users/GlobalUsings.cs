@@ -1,4 +1,6 @@
 global using MacheteBang.BookLending.Users.DataStore;
+global using MacheteBang.BookLending.Users.Requests;
+global using MacheteBang.BookLending.Users.Responses;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.DependencyInjection;
@@ -7,3 +9,6 @@ global using MacheteBang.BookLending.Users.Models;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
+global using ErrorOr;
+global using MacheteBang.BookLending.Kernel.Errors;
+global using MacheteBang.BookLending.Users.Errors;

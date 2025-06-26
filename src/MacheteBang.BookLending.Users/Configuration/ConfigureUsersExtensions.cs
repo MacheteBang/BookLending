@@ -16,6 +16,12 @@ public static class ConfigureUsersExtensions
             });
         }
 
+        // Register the Identity services
+        services
+            .AddIdentity<User, Role>()
+            .AddEntityFrameworkStores<UsersDbContext>()
+            .AddDefaultTokenProviders();
+
         return services;
     }
 
