@@ -1,18 +1,20 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 namespace MacheteBang.BookLending.Users.DataStore;
 
-internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContext(options)
+internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options) : IdentityDbContext<User, Role, Guid>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
         // Associate Identity with custom table names (and custom column names)
-        builder.Entity<UserEntity>(b =>
+        builder.Entity<User>(b =>
         {
             b.ToTable("Users");
             b.HasKey(k => k.Id).HasName("UserId");
             b.Property(p => p.Id).HasColumnName("UserId");
         });
 
-        builder.Entity<RoleEntity>(b =>
+        builder.Entity<Role>(b =>
         {
             b.ToTable("Roles");
             b.HasKey(k => k.Id).HasName("RoleId");
