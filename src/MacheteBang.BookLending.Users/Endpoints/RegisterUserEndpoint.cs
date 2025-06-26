@@ -12,6 +12,8 @@ internal sealed class RegisterUserEndpoint : IUsersEndpoint
                     user => Results.Created($"/users/{user.Id}", user.ToResponse()),
                     error => error.ToProblemResult());
             })
+            .Produces<UserResponse>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest)
             .WithDescription("Registers a new user")
             .WithName("RegisterUser")
             .WithSummary("Register User");

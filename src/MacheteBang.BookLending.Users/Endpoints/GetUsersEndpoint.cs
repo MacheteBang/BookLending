@@ -10,6 +10,7 @@ internal sealed class GetUsersEndpoint : IUsersEndpoint
                 var users = await GetAllUsersAsync(userManager);
                 return Results.Ok(users.ToResponse());
             })
+            .Produces<UsersResponse>(StatusCodes.Status200OK)
             .WithDescription("Gets the complete list of users in the system")
             .WithName("GetAllUsers")
             .WithSummary("Get All Users");

@@ -7,18 +7,20 @@ internal sealed class PromoteUserEndpoint : IUsersEndpoint
         app.MapUsersGroup()
             .MapPatch("/{userId}/promote", async ([FromServices] UserManager<User> userManager, Guid userId) =>
             {
-                var result = await PromotUserAsync(userManager, userId);
+                var result = await PromoteUserAsync(userManager, userId);
 
                 return result.Match(
                     success => Results.Accepted(),
                     error => error.ToProblemResult());
             })
+            .Produces(StatusCodes.Status202Accepted)
+            .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Promotes a user to Administrator")
             .WithName("PromoteUser")
             .WithSummary("Promote User");
     }
 
-    private static async Task<ErrorOr<Success>> PromotUserAsync(UserManager<User> userManager, Guid userId)
+    private static async Task<ErrorOr<Success>> PromoteUserAsync(UserManager<User> userManager, Guid userId)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null) return UserErrors.UserNotFound(userId);

@@ -13,6 +13,8 @@ internal sealed class DemoteUserEndpoint : IUsersEndpoint
                     success => Results.Accepted(),
                     error => error.ToProblemResult());
             })
+            .Produces(StatusCodes.Status202Accepted)
+            .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Demotes a user from Administrator role")
             .WithName("DemoteUser")
             .WithSummary("Demote User");
