@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/books
+  url: {{baseUrl}}/books?q=1984
   body: none
   auth: none
+}
+
+params:query {
+  q: 1984
 }
