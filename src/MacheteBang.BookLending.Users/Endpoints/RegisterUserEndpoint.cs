@@ -31,7 +31,7 @@ internal sealed class RegisterUserEndpoint : IUsersEndpoint
             return UserErrors.CreateFailed(result.Errors);
         }
 
-        var roleResult = await userManager.AddToRoleAsync(user, "Member");
+        var roleResult = await userManager.AddToRoleAsync(user, Roles.Member);
         if (!roleResult.Succeeded)
         {
             await userManager.DeleteAsync(user);

@@ -25,7 +25,7 @@ internal sealed class PromoteUserEndpoint : IUsersEndpoint
         var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null) return UserErrors.UserNotFound(userId);
 
-        var roleResult = await userManager.AddToRoleAsync(user, "Administrator");
+        var roleResult = await userManager.AddToRoleAsync(user, Roles.Administrator);
         if (!roleResult.Succeeded)
         {
             // TODO: Look at the various IdentityResult errors and filter where appropriate
