@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using MacheteBang.BookLending.Users.Services;
 
 namespace MacheteBang.BookLending.Users.Configuration;
 
@@ -21,6 +22,9 @@ public static class ConfigureUsersExtensions
             .AddIdentity<User, Role>()
             .AddEntityFrameworkStores<UsersDbContext>()
             .AddDefaultTokenProviders();
+
+        // Register JwtService
+        services.AddSingleton<IJwtService, JwtService>();
 
         return services;
     }
