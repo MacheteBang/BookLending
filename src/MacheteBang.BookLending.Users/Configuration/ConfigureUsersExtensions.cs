@@ -1,9 +1,6 @@
 using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using MacheteBang.BookLending.Users.Services;
-using System.Text;
 
 namespace MacheteBang.BookLending.Users.Configuration;
 
@@ -20,50 +17,21 @@ public static class ConfigureUsersExtensions
             });
         }
 
-        // Register the Identity services
+        // Register the Identity services with explicit configuration to avoid overriding JWT Bearer
         services
-            .AddIdentity<User, Role>()
+            .AddIdentityCore<User>()
+            .AddRoles<Role>()
             .AddEntityFrameworkStores<UsersDbContext>()
             .AddDefaultTokenProviders();
 
         // Register JwtService
         services.AddSingleton<IJwtService, JwtService>();
 
-        // JWT Authentication setup
-        var jwtSection = configuration.GetSection("Jwt");
-        var key = jwtSection["Key"];
-        var issuer = jwtSection["Issuer"];
-        var audience = jwtSection["Audience"];
-
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = issuer,
-                ValidAudience = audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!))
-            };
-        });
-
-        services.AddAuthorization();
-
         return services;
     }
 
     public static WebApplication UseUsers(this WebApplication app)
     {
-        app.UseAuthentication(); // Ensure authentication middleware is added
-        app.UseAuthorization();  // Ensure authorization middleware is added
-
         Assembly thisAssembly = Assembly.GetExecutingAssembly();
         var endpoints = thisAssembly.GetTypes()
             .Where(t => typeof(IUsersEndpoint).IsAssignableFrom(t) && t.IsClass && !t.IsInterface && !t.IsAbstract);

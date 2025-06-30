@@ -21,6 +21,11 @@
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.6" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
   </ItemGroup>
+  <!-- Authentication & Authorization -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
+  </ItemGroup>
   <!-- Other Projects -->
   <ItemGroup>
     <ProjectReference Include="..\MacheteBang.BookLending.Users\MacheteBang.BookLending.Users.csproj" />
