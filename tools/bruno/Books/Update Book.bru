@@ -1,0 +1,27 @@
+meta {
+  name: Update Book
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/books/:bookId
+  body: json
+  auth: bearer
+}
+
+params:path {
+  bookId:
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "isbn": "978-0060850524",
+    "title": "Brave New World 2",
+    "author": "Aldous Huxley"
+  }
+}
