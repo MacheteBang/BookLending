@@ -24,6 +24,20 @@ public sealed record Isbn
         return new Isbn(trimmedValue);
     }
 
+    public static bool TryCreate(string? value, out Isbn? isbn)
+    {
+        isbn = null;
+        try
+        {
+            isbn = Create(value);
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+    }
+
     public override string ToString() => Value;
 
     public static bool IsValidISBN(string isbn)

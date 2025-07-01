@@ -23,18 +23,10 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
 
     private static async Task<ErrorOr<Book>> AddBookAsync(AddBookRequest request, BooksDbContext booksDb)
     {
-        // TODO: Capture and handle errors from the database
-        Isbn isbn;
-        try
-        {
-            isbn = Isbn.Create(request.Isbn);
-        }
-        catch (FormatException)
-        {
-            return BookErrors.InvalidIsbn();
-        }
+        if (!Isbn.TryCreate(request.Isbn, out Isbn? isbn)) return BookErrors.InvalidIsbn();
 
-        Book newBook = Book.Create(isbn, request.Title, request.Author);
+        // TODO: Capture and handle errors from the database
+        Book newBook = Book.Create(isbn!, request.Title, request.Author);
         await booksDb.Books.AddAsync(newBook);
         await booksDb.SaveChangesAsync();
         return newBook;

@@ -29,17 +29,9 @@ internal sealed class UpdateBookEndpoint : IBooksEndpoint
         UpdateBookRequest request,
         BooksDbContext booksDb)
     {
-        // TODO: Capture and handle errors from the database
-        Isbn isbn;
-        try
-        {
-            isbn = Isbn.Create(request.Isbn);
-        }
-        catch (FormatException)
-        {
-            return BookErrors.InvalidIsbn();
-        }
+        if (!Isbn.TryCreate(request.Isbn, out Isbn? isbn)) return BookErrors.InvalidIsbn();
 
+        // TODO: Capture and handle errors from the database
         Book? existingBook = await booksDb.Books
             .Include(b => b.Copies)
             .FirstOrDefaultAsync(b => b.BookId == bookId);
@@ -49,7 +41,7 @@ internal sealed class UpdateBookEndpoint : IBooksEndpoint
             return BookErrors.BookNotFound(bookId);
         }
 
-        existingBook.Isbn = isbn;
+        existingBook.Isbn = isbn!;
         existingBook.Title = request.Title;
         existingBook.Author = request.Author;
 
