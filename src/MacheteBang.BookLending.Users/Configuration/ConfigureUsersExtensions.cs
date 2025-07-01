@@ -17,14 +17,13 @@ public static class ConfigureUsersExtensions
             });
         }
 
-        // Register the Identity services with explicit configuration to avoid overriding JWT Bearer
         services
             .AddIdentityCore<User>()
             .AddRoles<Role>()
             .AddEntityFrameworkStores<UsersDbContext>()
+            .AddSignInManager()
             .AddDefaultTokenProviders();
 
-        // Register JwtService
         services.AddSingleton<IJwtService, JwtService>();
 
         return services;

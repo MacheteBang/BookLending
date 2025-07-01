@@ -7,9 +7,13 @@ meta {
 get {
   url: {{baseUrl}}/books?q=1984
   body: none
-  auth: none
+  auth: bearer
 }
 
 params:query {
   q: 1984
+}
+
+auth:bearer {
+  token: {{token}}
 }

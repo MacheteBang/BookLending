@@ -14,6 +14,7 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
                     errors => errors.ToProblemResult()
                 );
             })
+            .RequireAuthorization(Roles.Administrator)
             .Produces<BookResponse>(StatusCodes.Status201Created)
             .WithDescription("Adds a new book to the library catalog")
             .WithName("AddBook")
@@ -22,6 +23,7 @@ internal sealed class AddBookEndpoint : IBooksEndpoint
 
     private static async Task<ErrorOr<Book>> AddBookAsync(AddBookRequest request, BooksDbContext booksDb)
     {
+        // TODO: Capture and handle errors from the database
         Isbn isbn;
         try
         {

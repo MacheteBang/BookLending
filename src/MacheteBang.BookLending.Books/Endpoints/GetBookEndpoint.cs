@@ -15,6 +15,7 @@ internal sealed class GetBookEndpoint : IBooksEndpoint
                 );
 
             })
+            .RequireAuthorization(Roles.Member)
             .Produces<BookResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Gets a specific book by its ID from the library catalog")

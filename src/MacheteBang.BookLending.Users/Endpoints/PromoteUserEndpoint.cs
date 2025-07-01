@@ -13,6 +13,7 @@ internal sealed class PromoteUserEndpoint : IUsersEndpoint
                     success => Results.Accepted(),
                     error => error.ToProblemResult());
             })
+            .RequireAuthorization(Roles.Administrator)
             .Produces(StatusCodes.Status202Accepted)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Promotes a user to Administrator")

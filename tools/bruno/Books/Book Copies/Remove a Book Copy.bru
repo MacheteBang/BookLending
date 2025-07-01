@@ -7,10 +7,14 @@ meta {
 delete {
   url: {{baseUrl}}/books/:bookId/copies/:copyId
   body: none
-  auth: none
+  auth: bearer
 }
 
 params:path {
   bookId: 01979e70-61c6-78a3-9c0f-bac88947cf60
-  copyId: a7bf433e-f36b-1410-82db-000514175201
+  copyId: 0197c5b6-d8df-7af8-8ace-677388772df7
+}
+
+auth:bearer {
+  token: {{token}}
 }

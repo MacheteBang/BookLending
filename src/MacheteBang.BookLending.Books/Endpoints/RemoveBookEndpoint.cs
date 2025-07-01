@@ -11,6 +11,7 @@ internal sealed class RemoveBookEndpoint : IBooksEndpoint
 
                 return Results.Accepted();
             })
+            .RequireAuthorization(Roles.Administrator)
             .Produces(StatusCodes.Status202Accepted)
             .WithDescription("Removes a specific book by its ID from the library catalog")
             .WithName("RemoveBook")

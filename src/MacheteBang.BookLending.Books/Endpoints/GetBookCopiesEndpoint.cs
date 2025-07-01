@@ -14,6 +14,7 @@ internal sealed class GetBookCopiesEndpoint : IBooksEndpoint
                     errors => errors.ToProblemResult()
                 );
             })
+            .RequireAuthorization(Roles.Member)
             .Produces<BookCopiesResponse>(StatusCodes.Status200OK)
             .WithDescription("Retrieves all copies of a specific book by its ID")
             .WithName("GetBookCopies")

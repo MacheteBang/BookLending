@@ -1,17 +1,17 @@
 meta {
-  name: Remove a Book
+  name: Demo Administrator
   type: http
   seq: 4
 }
 
-delete {
-  url: {{baseUrl}}/books/:id
+patch {
+  url: {{baseUrl}}/users/:id/demote
   body: none
   auth: bearer
 }
 
 params:path {
-  id: 0197ac28-fa58-7fe6-bf57-b03fb6c0779d
+  id: 648b5652-71f8-4eff-748c-08ddb8916028
 }
 
 auth:bearer {

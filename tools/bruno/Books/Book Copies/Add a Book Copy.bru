@@ -7,11 +7,15 @@ meta {
 post {
   url: {{baseUrl}}/books/:bookId/copies
   body: json
-  auth: none
+  auth: bearer
 }
 
 params:path {
-  bookId:
+  bookId: 0197ac28-fa58-7fe6-bf57-b03fb6c0779c
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 body:json {

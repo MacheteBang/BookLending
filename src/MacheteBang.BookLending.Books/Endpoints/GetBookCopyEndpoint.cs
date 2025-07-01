@@ -13,6 +13,7 @@ internal sealed class GetBookCopyEndpoint : IBooksEndpoint
                     bookCopy => Results.Ok(bookCopy.ToResponse()),
                     errors => errors.ToProblemResult());
             })
+            .RequireAuthorization(Roles.Member)
             .Produces<BookCopyResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Gets a specific copy of a book by its ID")

@@ -7,9 +7,13 @@ meta {
 get {
   url: {{baseUrl}}/books/:bookId/copies
   body: none
-  auth: none
+  auth: bearer
 }
 
 params:path {
   bookId: 01979e70-61c6-78a3-9c0f-bac88947cf60
+}
+
+auth:bearer {
+  token: {{token}}
 }

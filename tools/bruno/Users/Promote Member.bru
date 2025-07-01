@@ -1,0 +1,19 @@
+meta {
+  name: Promote Member
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/users/:id/promote
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 648b5652-71f8-4eff-748c-08ddb8916028
+}
+
+auth:bearer {
+  token: {{token}}
+}

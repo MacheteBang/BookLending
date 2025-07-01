@@ -1,6 +1,6 @@
 namespace MacheteBang.BookLending.Users.Endpoints;
 
-internal sealed class DemoteUserEndpoint : IUsersEndpoint
+internal sealed class DemoteAdministratorEndpoint : IUsersEndpoint
 {
     public void MapUsersEndpoint(IEndpointRouteBuilder app)
     {
@@ -13,6 +13,7 @@ internal sealed class DemoteUserEndpoint : IUsersEndpoint
                     success => Results.Accepted(),
                     error => error.ToProblemResult());
             })
+            .RequireAuthorization(Roles.Administrator)
             .Produces(StatusCodes.Status202Accepted)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Demotes a user from Administrator role")

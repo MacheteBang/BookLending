@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MacheteBang.BookLending.Kernel.Constants;
 
 namespace MacheteBang.BookLending.Api.Configuration;
 
@@ -34,7 +35,11 @@ internal static class ConfigureAuthExtensions
             };
         });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(Roles.Administrator, policy => policy.RequireRole(Roles.Administrator));
+            options.AddPolicy(Roles.Member, policy => policy.RequireRole(Roles.Member));
+        });
 
         return services;
     }

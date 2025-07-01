@@ -6,6 +6,7 @@ global using MacheteBang.BookLending.Books.Responses;
 global using MacheteBang.BookLending.Books.ValueObjects;
 
 global using MacheteBang.BookLending.Kernel.Errors;
+global using MacheteBang.BookLending.Kernel.Constants;
 
 global using ErrorOr;
 

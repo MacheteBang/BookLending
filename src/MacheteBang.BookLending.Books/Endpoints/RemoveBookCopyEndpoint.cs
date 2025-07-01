@@ -11,8 +11,8 @@ internal sealed class RemoveBookCopyEndpoint : IBooksEndpoint
 
                 return Results.Accepted();
             })
+            .RequireAuthorization(Roles.Administrator)
             .Produces(StatusCodes.Status202Accepted)
-            .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Removes a specific copy of a book from the library catalog")
             .WithName("RemoveBookCopy")
             .WithSummary("Remove a Book Copy by ID");
