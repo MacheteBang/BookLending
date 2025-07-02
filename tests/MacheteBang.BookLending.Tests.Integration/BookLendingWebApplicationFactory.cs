@@ -35,22 +35,18 @@ public class BookLendingWebApplicationFactory : WebApplicationFactory<Program>
             using var scope = serviceProvider.CreateScope();
             var userDbContext = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
             // Ensure database is created
             userDbContext.Database.EnsureCreated();
 
-            // Create roles immediately after database creation
-            if (!roleManager.RoleExistsAsync("Administrator").Result)
-            {
-                var adminRole = new Role { Name = "Administrator" };
-                roleManager.CreateAsync(adminRole).Wait();
-            }
+            roleManager.CreateAsync(new Role { Name = Constants.Roles.Administrator }).Wait();
+            roleManager.CreateAsync(new Role { Name = Constants.Roles.Member }).Wait();
 
-            if (!roleManager.RoleExistsAsync("Member").Result)
-            {
-                var memberRole = new Role { Name = "Member" };
-                roleManager.CreateAsync(memberRole).Wait();
-            }
+            userManager.CreateAsync(new User { UserName = Constants.Users.AdminEmail, Email = Constants.Users.AdminEmail }, Constants.Users.Password).Wait();
+            userManager.AddToRoleAsync(userManager.FindByEmailAsync(Constants.Users.AdminEmail).Result!, Constants.Roles.Administrator).Wait();
+            userManager.CreateAsync(new User { UserName = Constants.Users.MemberEmail, Email = Constants.Users.MemberEmail }, Constants.Users.Password).Wait();
+            userManager.AddToRoleAsync(userManager.FindByEmailAsync(Constants.Users.MemberEmail).Result!, Constants.Roles.Member).Wait();
         });
     }
 

@@ -16,6 +16,40 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
         ThenUserCreatedSuccessfully();
     }
 
+    [Fact(Skip = "Test not implemented yet")]
+
+    public void RegisterUserWithInvalidEmail_ShouldReturnBadRequest()
+    {
+        // GivenUserRequestWithInvalidEmail();
+        // WhenUserSubmitsRegistration();
+        // ThenResponseShouldBeBadRequest();
+    }
+
+    [Fact(Skip = "Test not implemented yet")]
+    public void RegisterUserWithShortPassword_ShouldReturnBadRequest()
+    {
+        // GivenUserRequestWithShortPassword();
+        // WhenUserSubmitsRegistration();
+        // ThenResponseShouldBeBadRequest();
+    }
+
+    [Fact(Skip = "Test not implemented yet")]
+    public void RegisterUserWithWeakPassword_ShouldReturnBadRequest()
+    {
+        // GivenUserRequestWithWeakPassword();
+        // WhenUserSubmitsRegistration();
+        // ThenResponseShouldBeBadRequest();
+    }
+
+    [Fact(Skip = "Test not implemented yet")]
+    public void RegisterSameUserTwice_SecondAttemptShouldReturnConflict()
+    {
+        // GivenValidUserRequest();
+        // WhenUserSubmitsRegistration();
+        // ThenUserCreatedSuccessfully();
+        // WhenUserSubmitsRegistration(); // Same request again
+        // ThenResponseShouldBeConflict();
+    }
 
     private void GivenValidUserRequest()
     {
