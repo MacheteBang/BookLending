@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace MacheteBang.BookLending.Tests.Integration.UsersTests;
 
 public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFixture<BookLendingWebApplicationFactory>
@@ -41,14 +43,14 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
         // ThenResponseShouldBeBadRequest();
     }
 
-    [Fact(Skip = "Test not implemented yet")]
+    [Fact]
     public void RegisterSameUserTwice_SecondAttemptShouldReturnConflict()
     {
-        // GivenValidUserRequest();
-        // WhenUserSubmitsRegistration();
-        // ThenUserCreatedSuccessfully();
-        // WhenUserSubmitsRegistration(); // Same request again
-        // ThenResponseShouldBeConflict();
+        GivenValidUserRequest();
+        WhenUserSubmitsRegistration();
+        ThenUserCreatedSuccessfully();
+        WhenUserSubmitsRegistration();
+        ThenResponseShouldBeDuplicateUsernameConflict();
     }
 
     private void GivenValidUserRequest()
@@ -84,5 +86,14 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
 
         response.ShouldNotBeNull();
         response.Email.ShouldBe(_request.Email);
+    }
+    private void ThenResponseShouldBeDuplicateUsernameConflict()
+    {
+        _apiResponse.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        string body = _apiResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        body.ShouldNotBeNullOrEmpty();
+        ProblemDetails? problemDetails = JsonSerializer.Deserialize<ProblemDetails>(body, _jsonOptions);
+        problemDetails.ShouldNotBeNull();
+        problemDetails.Title.ShouldBe("Users.DuplicateUserName");
     }
 }
