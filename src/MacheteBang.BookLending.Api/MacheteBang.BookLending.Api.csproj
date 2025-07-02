@@ -4,6 +4,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="MacheteBang.BookLending.Tests.Integration" />
+  </ItemGroup>
   <!-- OpenApi -->
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
