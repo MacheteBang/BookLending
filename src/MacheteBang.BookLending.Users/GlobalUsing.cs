@@ -12,4 +12,5 @@ global using Microsoft.AspNetCore.Mvc;
 global using ErrorOr;
 global using MacheteBang.BookLending.Kernel.Constants;
 global using MacheteBang.BookLending.Kernel.Errors;
+global using MacheteBang.BookLending.Kernel.Extensions;
 global using MacheteBang.BookLending.Users.Errors;

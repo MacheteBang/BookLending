@@ -7,6 +7,8 @@ internal sealed class RegisterUserEndpoint : IUsersEndpoint
         app.MapUsersGroup()
             .MapPost("/register", async ([FromServices] UserManager<User> userManager, RegisterUserRequest request) =>
             {
+                if (!request.Email.IsValidEmail()) return KernelErrors.InvalidEmail(request.Email).ToProblemResult();
+
                 var result = await RegisterUserAsync(userManager, request);
                 return result.Match(
                     user => Results.Created($"/users/{user.Id}", user.ToResponse()),
@@ -27,7 +29,21 @@ internal sealed class RegisterUserEndpoint : IUsersEndpoint
 
         if (!result.Succeeded)
         {
-            // TODO: Look at the various IdentityResult errors and filter where appropriate
+            if (result.Errors.Any(e => e.Code.StartsWith("Invalid")))
+            {
+                return UserErrors.InvalidUserName(request.Email);
+            }
+
+            if (result.Errors.Any(e => e.Code.StartsWith("Password")))
+            {
+                return UserErrors.InvalidPassword(result.Errors.Where(e => e.Code.StartsWith("Password")));
+            }
+
+            if (result.Errors.Any(e => e.Code.StartsWith("Duplicate")))
+            {
+                return UserErrors.DuplicateUserName();
+            }
+
             return UserErrors.CreateFailed(result.Errors);
         }
 
@@ -35,7 +51,6 @@ internal sealed class RegisterUserEndpoint : IUsersEndpoint
         if (!roleResult.Succeeded)
         {
             await userManager.DeleteAsync(user);
-            // TODO: Look at the various IdentityResult errors and filter where appropriate
             return UserErrors.RoleAssignmentFailed(roleResult.Errors);
         }
 
