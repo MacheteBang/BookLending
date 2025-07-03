@@ -9,6 +9,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MacheteBang.BookLending.Books.Tests.Unit/MacheteBang.BookLending.Books.Tests.Unit.csproj" />
+    <Project Path="tests/MacheteBang.BookLending.Kernel.Tests.Unit/MacheteBang.BookLending.Kernel.Tests.Unit.csproj" />
     <Project Path="tests/MacheteBang.BookLending.Tests.Integration/MacheteBang.BookLending.Tests.Integration.csproj" />
   </Folder>
 </Solution>
