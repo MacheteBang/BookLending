@@ -26,27 +26,29 @@ public class RegisterTests()
 
         var response = WhenUserSubmitsRegistration(client, request);
 
-        ThenResponseShouldBeBadRequest(response);
+        ThenResponseShouldBeInvalidEmailBadResponse(response);
     }
 
-    [Fact(Skip = "Test not implemented yet")]
+    [Fact]
     public void RegisterUserWithShortPassword_ShouldReturnBadRequest()
     {
         var client = GivenNewWebApplication();
+        var request = GivenUserRequestWithShortPassword();
 
-        // GivenUserRequestWithShortPassword();
-        // WhenUserSubmitsRegistration();
-        // ThenResponseShouldBeBadRequest();
+        var response = WhenUserSubmitsRegistration(client, request);
+
+        ThenResponseShouldBeInvalidPasswordBadResponse(response);
     }
 
-    [Fact(Skip = "Test not implemented yet")]
+    [Fact]
     public void RegisterUserWithWeakPassword_ShouldReturnBadRequest()
     {
         var client = GivenNewWebApplication();
+        var request = GivenUserRequestWithWeakPassword();
 
-        // GivenUserRequestWithWeakPassword();
-        // WhenUserSubmitsRegistration();
-        // ThenResponseShouldBeBadRequest();
+        var response = WhenUserSubmitsRegistration(client, request);
+
+        ThenResponseShouldBeInvalidPasswordBadResponse(response);
     }
 
     [Fact]
@@ -82,6 +84,24 @@ public class RegisterTests()
         (
             Email: "invalid-email",
             Password: "Pass@word1"
+        );
+    }
+
+    private static RegisterUserRequest GivenUserRequestWithShortPassword()
+    {
+        return new RegisterUserRequest
+        (
+            Email: "test@example.com",
+            Password: "short"
+        );
+    }
+
+    private static RegisterUserRequest GivenUserRequestWithWeakPassword()
+    {
+        return new RegisterUserRequest
+        (
+            Email: "test@example.com",
+            Password: "weakpassword"
         );
     }
 
@@ -122,7 +142,7 @@ public class RegisterTests()
         problemDetails.Title.ShouldBe("Users.DuplicateUserName");
     }
 
-    private static void ThenResponseShouldBeBadRequest(HttpResponseMessage response)
+    private static void ThenResponseShouldBeInvalidEmailBadResponse(HttpResponseMessage response)
     {
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         string body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -130,5 +150,15 @@ public class RegisterTests()
         ValidationProblemDetails? problemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(body, _jsonOptions);
         problemDetails.ShouldNotBeNull();
         problemDetails.Errors.Any(e => e.Key == "Kernel.InvalidEmail").ShouldBeTrue();
+    }
+
+    private static void ThenResponseShouldBeInvalidPasswordBadResponse(HttpResponseMessage response)
+    {
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        string body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        body.ShouldNotBeNullOrEmpty();
+        ValidationProblemDetails? problemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(body, _jsonOptions);
+        problemDetails.ShouldNotBeNull();
+        problemDetails.Errors.Any(e => e.Key.Contains("Password")).ShouldBeTrue();
     }
 }
