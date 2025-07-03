@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MacheteBang.BookLending.Tests.Integration.UsersTests;
 
-public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFixture<BookLendingWebApplicationFactory>
+public class RegisterTests()
 {
-    private readonly HttpClient _client = factory.CreateClient();
     private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     private RegisterUserRequest _request = default!;
@@ -13,8 +12,10 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
     [Fact]
     public void RegisterValidUser_ShouldReturnSuccess()
     {
+        var client = GetNewClient();
+
         GivenValidUserRequest();
-        WhenUserSubmitsRegistration();
+        WhenUserSubmitsRegistration(client);
         ThenUserCreatedSuccessfully();
     }
 
@@ -22,6 +23,8 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
 
     public void RegisterUserWithInvalidEmail_ShouldReturnBadRequest()
     {
+        var client = GetNewClient();
+
         // GivenUserRequestWithInvalidEmail();
         // WhenUserSubmitsRegistration();
         // ThenResponseShouldBeBadRequest();
@@ -30,6 +33,8 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
     [Fact(Skip = "Test not implemented yet")]
     public void RegisterUserWithShortPassword_ShouldReturnBadRequest()
     {
+        var client = GetNewClient();
+
         // GivenUserRequestWithShortPassword();
         // WhenUserSubmitsRegistration();
         // ThenResponseShouldBeBadRequest();
@@ -38,6 +43,8 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
     [Fact(Skip = "Test not implemented yet")]
     public void RegisterUserWithWeakPassword_ShouldReturnBadRequest()
     {
+        var client = GetNewClient();
+
         // GivenUserRequestWithWeakPassword();
         // WhenUserSubmitsRegistration();
         // ThenResponseShouldBeBadRequest();
@@ -46,10 +53,12 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
     [Fact]
     public void RegisterSameUserTwice_SecondAttemptShouldReturnConflict()
     {
+        var client = GetNewClient();
+
         GivenValidUserRequest();
-        WhenUserSubmitsRegistration();
+        WhenUserSubmitsRegistration(client);
         ThenUserCreatedSuccessfully();
-        WhenUserSubmitsRegistration();
+        WhenUserSubmitsRegistration(client);
         ThenResponseShouldBeDuplicateUsernameConflict();
     }
 
@@ -62,10 +71,10 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
         );
     }
 
-    private void WhenUserSubmitsRegistration()
+    private void WhenUserSubmitsRegistration(HttpClient client)
     {
         var content = new StringContent(JsonSerializer.Serialize(_request), Encoding.UTF8, "application/json");
-        _apiResponse = _client.PostAsync("/users/register", content).GetAwaiter().GetResult();
+        _apiResponse = client.PostAsync("/users/register", content).GetAwaiter().GetResult();
     }
     private void ThenUserCreatedSuccessfully()
     {
@@ -95,5 +104,10 @@ public class RegisterTests(BookLendingWebApplicationFactory factory) : IClassFix
         ProblemDetails? problemDetails = JsonSerializer.Deserialize<ProblemDetails>(body, _jsonOptions);
         problemDetails.ShouldNotBeNull();
         problemDetails.Title.ShouldBe("Users.DuplicateUserName");
+    }
+
+    private static HttpClient GetNewClient()
+    {
+        return new BookLendingWebApplicationFactory(Guid.CreateVersion7().ToString()).CreateClient();
     }
 }

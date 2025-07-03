@@ -11,54 +11,78 @@ namespace MacheteBang.BookLending.Tests.Integration;
 
 public class BookLendingWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private readonly string _uniqueDbId;
+
+    public BookLendingWebApplicationFactory(string uniqueDbId)
+    {
+        _uniqueDbId = uniqueDbId;
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
-            // Remove the existing DbContext registrations
+            // Remove existing DbContext registrations
             RemoveDbContextRegistration<BooksDbContext>(services);
             RemoveDbContextRegistration<UsersDbContext>(services);
 
-            // Add InMemory database contexts
+            // Register new in-memory databases with unique names
             services.AddDbContext<BooksDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("BooksTestDb");
-            });
+                options.UseInMemoryDatabase($"BooksTestDb_{_uniqueDbId}"));
 
             services.AddDbContext<UsersDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("UsersTestDb");
-            });
+                options.UseInMemoryDatabase($"UsersTestDb_{_uniqueDbId}"));
 
-            // Make sure Identity services are registered properly for seeding
-            var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
+            // Ensure services are built and seeding is performed
+            var sp = services.BuildServiceProvider();
+
+            using var scope = sp.CreateScope();
+
             var userDbContext = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
-            // Ensure database is created
-            userDbContext.Database.EnsureCreated();
-
-            roleManager.CreateAsync(new Role { Name = Constants.Roles.Administrator }).Wait();
-            roleManager.CreateAsync(new Role { Name = Constants.Roles.Member }).Wait();
-
-            userManager.CreateAsync(new User { UserName = Constants.Users.AdminEmail, Email = Constants.Users.AdminEmail }, Constants.Users.Password).Wait();
-            userManager.AddToRoleAsync(userManager.FindByEmailAsync(Constants.Users.AdminEmail).Result!, Constants.Roles.Administrator).Wait();
-            userManager.CreateAsync(new User { UserName = Constants.Users.MemberEmail, Email = Constants.Users.MemberEmail }, Constants.Users.Password).Wait();
-            userManager.AddToRoleAsync(userManager.FindByEmailAsync(Constants.Users.MemberEmail).Result!, Constants.Roles.Member).Wait();
+            SeedUsersAsync(userDbContext, userManager, roleManager).GetAwaiter().GetResult();
         });
     }
 
     private static void RemoveDbContextRegistration<T>(IServiceCollection services) where T : DbContext
     {
         var optionsDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<T>));
-        if (optionsDescriptor != null) services.Remove(optionsDescriptor);
+        if (optionsDescriptor is not null)
+            services.Remove(optionsDescriptor);
 
         var optionsConfigurationDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDbContextOptionsConfiguration<T>));
-        if (optionsConfigurationDescriptor != null) services.Remove(optionsConfigurationDescriptor);
+        if (optionsConfigurationDescriptor is not null)
+            services.Remove(optionsConfigurationDescriptor);
 
         var contextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(T));
-        if (contextDescriptor != null) services.Remove(contextDescriptor);
+        if (contextDescriptor is not null)
+            services.Remove(contextDescriptor);
+    }
+
+    private static async Task SeedUsersAsync(
+        UsersDbContext dbContext,
+        UserManager<User> userManager,
+        RoleManager<Role> roleManager)
+    {
+        // Ensure a clean state
+        await dbContext.Database.EnsureCreatedAsync();
+
+        // Seed roles
+        await roleManager.CreateAsync(new Role { Name = Constants.Roles.Administrator });
+        await roleManager.CreateAsync(new Role { Name = Constants.Roles.Member });
+
+        // Seed users
+        var adminEmail = Constants.Users.AdminEmail;
+        var memberEmail = Constants.Users.MemberEmail;
+
+        var adminUser = new User { UserName = adminEmail, Email = adminEmail };
+        await userManager.CreateAsync(adminUser, Constants.Users.Password);
+        await userManager.AddToRoleAsync(adminUser, Constants.Roles.Administrator);
+
+        var memberUser = new User { UserName = memberEmail, Email = memberEmail };
+        await userManager.CreateAsync(memberUser, Constants.Users.Password);
+        await userManager.AddToRoleAsync(memberUser, Constants.Roles.Member);
     }
 }
