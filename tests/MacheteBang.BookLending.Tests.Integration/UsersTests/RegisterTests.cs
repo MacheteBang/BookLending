@@ -4,36 +4,35 @@ namespace MacheteBang.BookLending.Tests.Integration.UsersTests;
 
 public class RegisterTests()
 {
-    private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
-
-    private RegisterUserRequest _request = default!;
-    private HttpResponseMessage _apiResponse = default!;
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     [Fact]
     public void RegisterValidUser_ShouldReturnSuccess()
     {
-        var client = GetNewClient();
+        var client = GivenNewWebApplication();
+        var request = GivenValidUserRequest();
 
-        GivenValidUserRequest();
-        WhenUserSubmitsRegistration(client);
-        ThenUserCreatedSuccessfully();
+        var response = WhenUserSubmitsRegistration(client, request);
+
+        ThenUserCreatedSuccessfully(response, request);
     }
 
-    [Fact(Skip = "Test not implemented yet")]
+    [Fact]
 
     public void RegisterUserWithInvalidEmail_ShouldReturnBadRequest()
     {
-        var client = GetNewClient();
+        var client = GivenNewWebApplication();
+        var request = GivenUserRequestWithInvalidEmail();
 
-        // GivenUserRequestWithInvalidEmail();
-        // WhenUserSubmitsRegistration();
-        // ThenResponseShouldBeBadRequest();
+        var response = WhenUserSubmitsRegistration(client, request);
+
+        ThenResponseShouldBeBadRequest(response);
     }
 
     [Fact(Skip = "Test not implemented yet")]
     public void RegisterUserWithShortPassword_ShouldReturnBadRequest()
     {
-        var client = GetNewClient();
+        var client = GivenNewWebApplication();
 
         // GivenUserRequestWithShortPassword();
         // WhenUserSubmitsRegistration();
@@ -43,7 +42,7 @@ public class RegisterTests()
     [Fact(Skip = "Test not implemented yet")]
     public void RegisterUserWithWeakPassword_ShouldReturnBadRequest()
     {
-        var client = GetNewClient();
+        var client = GivenNewWebApplication();
 
         // GivenUserRequestWithWeakPassword();
         // WhenUserSubmitsRegistration();
@@ -53,61 +52,83 @@ public class RegisterTests()
     [Fact]
     public void RegisterSameUserTwice_SecondAttemptShouldReturnConflict()
     {
-        var client = GetNewClient();
+        var client = GivenNewWebApplication();
+        var request = GivenValidUserRequest();
 
-        GivenValidUserRequest();
-        WhenUserSubmitsRegistration(client);
-        ThenUserCreatedSuccessfully();
-        WhenUserSubmitsRegistration(client);
-        ThenResponseShouldBeDuplicateUsernameConflict();
+        var response = WhenUserSubmitsRegistration(client, request);
+        ThenUserCreatedSuccessfully(response, request);
+        response = WhenUserSubmitsRegistration(client, request);
+        ThenResponseShouldBeDuplicateUsernameConflict(response);
+        ThenResponseShouldBeDuplicateUsernameConflict(response);
     }
 
-    private void GivenValidUserRequest()
+    private static RegisterUserRequest GivenValidUserRequest()
     {
-        _request = new RegisterUserRequest
+        return new RegisterUserRequest
         (
             Email: "test@example.com",
             Password: "Pass@word1"
         );
     }
 
-    private void WhenUserSubmitsRegistration(HttpClient client)
+    private static HttpClient GivenNewWebApplication()
     {
-        var content = new StringContent(JsonSerializer.Serialize(_request), Encoding.UTF8, "application/json");
-        _apiResponse = client.PostAsync("/users/register", content).GetAwaiter().GetResult();
+        return new BookLendingWebApplicationFactory(Guid.CreateVersion7().ToString()).CreateClient();
     }
-    private void ThenUserCreatedSuccessfully()
+
+    private static RegisterUserRequest GivenUserRequestWithInvalidEmail()
+    {
+        return new RegisterUserRequest
+        (
+            Email: "invalid-email",
+            Password: "Pass@word1"
+        );
+    }
+
+    private static HttpResponseMessage WhenUserSubmitsRegistration(HttpClient client, RegisterUserRequest request)
+    {
+        var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+        return client.PostAsync("/users/register", content).GetAwaiter().GetResult();
+    }
+
+    private static void ThenUserCreatedSuccessfully(HttpResponseMessage response, RegisterUserRequest expectedRequest)
     {
         // Assert HTTP status code
-        _apiResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
+        response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
         // Assert Location header
-        _apiResponse.Headers.ShouldContain(h => h.Key == "Location", "Response should contain a Location header");
+        response.Headers.ShouldContain(h => h.Key == "Location", "Response should contain a Location header");
 
-        var locationHeader = _apiResponse.Headers.GetValues("Location").First();
+        var locationHeader = response.Headers.GetValues("Location").First();
         locationHeader.ShouldNotBeNull();
         locationHeader.ShouldContain("/users/", Insensitive);
 
         // Assert response body
-        string body = _apiResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        string body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         body.ShouldNotBeNullOrEmpty();
-        UserResponse? response = JsonSerializer.Deserialize<UserResponse>(body, _jsonOptions);
+        UserResponse? userResponse = JsonSerializer.Deserialize<UserResponse>(body, _jsonOptions);
 
-        response.ShouldNotBeNull();
-        response.Email.ShouldBe(_request.Email);
+        userResponse.ShouldNotBeNull();
+        userResponse.Email.ShouldBe(expectedRequest.Email);
     }
-    private void ThenResponseShouldBeDuplicateUsernameConflict()
+
+    private static void ThenResponseShouldBeDuplicateUsernameConflict(HttpResponseMessage response)
     {
-        _apiResponse.StatusCode.ShouldBe(HttpStatusCode.Conflict);
-        string body = _apiResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        string body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         body.ShouldNotBeNullOrEmpty();
         ProblemDetails? problemDetails = JsonSerializer.Deserialize<ProblemDetails>(body, _jsonOptions);
         problemDetails.ShouldNotBeNull();
         problemDetails.Title.ShouldBe("Users.DuplicateUserName");
     }
 
-    private static HttpClient GetNewClient()
+    private static void ThenResponseShouldBeBadRequest(HttpResponseMessage response)
     {
-        return new BookLendingWebApplicationFactory(Guid.CreateVersion7().ToString()).CreateClient();
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        string body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        body.ShouldNotBeNullOrEmpty();
+        ValidationProblemDetails? problemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(body, _jsonOptions);
+        problemDetails.ShouldNotBeNull();
+        problemDetails.Errors.Any(e => e.Key == "Kernel.InvalidEmail").ShouldBeTrue();
     }
 }
